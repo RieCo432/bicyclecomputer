@@ -10,6 +10,7 @@
 #define SENSOR_PIN 2
 
 TFT_eSPI tft = TFT_eSPI();  // Invoke custom library
+TFT_eSprite face = TFT_eSprite(&tft);
 
 uint16_t bg_color_16 = tft.color565(0, 0, 80);
 
@@ -32,6 +33,7 @@ void setup(void) {
   acc.initialize();
   
   tft.init();
+  face.createSprite(240, 240);
   pinMode(BUTTON_UPPER_LEFT, INPUT_PULLUP);
   pinMode(BUTTON_UPPER_RIGHT, INPUT_PULLUP);
   pinMode(BUTTON_LOWER_LEFT, INPUT_PULLUP);
@@ -39,9 +41,9 @@ void setup(void) {
 }
 
 void loop() {
-  tft.fillScreen(bg_color_16);
+  face.fillSprite(bg_color_16);
   if (digitalRead(SENSOR_PIN)==0) {
-    tft.drawRect(110, 110, 20, 20, TFT_RED);
+    face.drawRect(110, 110, 20, 20, TFT_RED);
   }
   if (digitalRead(BUTTON_UPPER_LEFT)==0) {
     button_upper_left_pressed = true;
@@ -62,19 +64,19 @@ void loop() {
   }
 
   if (button_upper_left_pressed & button_upper_left_released) {
-    tft.drawRect(10, 10, 20, 20, TFT_RED);
+    face.drawRect(10, 10, 20, 20, TFT_RED);
     button_upper_left_pressed = false;
     button_upper_left_released = false;
   }
 
   if (button_upper_right_pressed & button_upper_right_released) {
-    tft.drawRect(210, 10, 20, 20, TFT_RED);
+    face.drawRect(210, 10, 20, 20, TFT_RED);
     button_upper_right_pressed = false;
     button_upper_right_released = false;
   }
 
   if (button_lower_left_pressed & button_lower_left_released) {
-    tft.drawRect(10, 210, 20, 20, TFT_RED);
+    face.drawRect(10, 210, 20, 20, TFT_RED);
     button_lower_left_pressed = false;
     button_lower_left_released = false;
   }
@@ -85,23 +87,22 @@ void loop() {
 
   if ((abs(x_g) > abs(y_g)) & abs(x_g) > abs(z_g)) {
     if (x_g < 0) {
-      tft.drawRect(110, 210, 20, 20, TFT_GREEN);
+      face.drawRect(110, 210, 20, 20, TFT_GREEN);
     } else {
-      tft.drawRect(110, 10, 20, 20, TFT_GREEN);
+      face.drawRect(110, 10, 20, 20, TFT_GREEN);
     }
   } else if ((abs(y_g) > abs(x_g)) & (abs(y_g) > abs(z_g))) {
     if (y_g < 0) {
-      tft.drawRect(10, 110, 20, 20, TFT_GREEN);
+      face.drawRect(10, 110, 20, 20, TFT_GREEN);
     } else {
-      tft.drawRect(210, 110, 20, 20, TFT_GREEN);
+      face.drawRect(210, 110, 20, 20, TFT_GREEN);
     }
   } else if ((abs(z_g) > abs(x_g)) & (abs(z_g) > abs(y_g))) {
     if (z_g < 0) {
-      tft.drawRect(115, 115, 10, 10, TFT_GREEN);
+      face.drawRect(115, 115, 10, 10, TFT_GREEN);
     } else {
-      tft.drawRect(110, 110, 20, 20, TFT_GREEN);
+      face.drawRect(110, 110, 20, 20, TFT_GREEN);
     }
   }
-  
-  delay(20);
+  face.pushSprite(0,0, TFT_TRANSPARENT);
 }
