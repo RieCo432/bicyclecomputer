@@ -17,6 +17,14 @@ int16_t x_g;
 int16_t y_g;
 int16_t z_g;
 
+bool button_upper_left_pressed = false;
+bool button_upper_right_pressed = false;
+bool button_lower_left_pressed = false;
+
+bool button_upper_left_released = false;
+bool button_upper_right_released = false;
+bool button_lower_left_released = false;
+
 QMA7981 acc;
 
 void setup(void) {
@@ -36,13 +44,39 @@ void loop() {
     tft.drawRect(110, 110, 20, 20, TFT_RED);
   }
   if (digitalRead(BUTTON_UPPER_LEFT)==0) {
-    tft.drawRect(10, 10, 20, 20, TFT_RED);
+    button_upper_left_pressed = true;
+  } else if (button_upper_left_pressed) {
+    button_upper_left_released = true;
   }
+  
   if (digitalRead(BUTTON_UPPER_RIGHT)==0) {
-    tft.drawRect(210, 10, 20, 20, TFT_RED);
+    button_upper_right_pressed = true;
+  } else if (button_upper_right_pressed) {
+    button_upper_right_released = true;
   }
+  
   if (digitalRead(BUTTON_LOWER_LEFT)==0) {
+    button_lower_left_pressed = true;
+  } else if (button_lower_left_pressed) {
+    button_lower_left_released = true;
+  }
+
+  if (button_upper_left_pressed & button_upper_left_released) {
+    tft.drawRect(10, 10, 20, 20, TFT_RED);
+    button_upper_left_pressed = false;
+    button_upper_left_released = false;
+  }
+
+  if (button_upper_right_pressed & button_upper_right_released) {
+    tft.drawRect(210, 10, 20, 20, TFT_RED);
+    button_upper_right_pressed = false;
+    button_upper_right_released = false;
+  }
+
+  if (button_lower_left_pressed & button_lower_left_released) {
     tft.drawRect(10, 210, 20, 20, TFT_RED);
+    button_lower_left_pressed = false;
+    button_lower_left_released = false;
   }
 
   x_g = acc.read_x();
@@ -68,8 +102,6 @@ void loop() {
       tft.drawRect(110, 110, 20, 20, TFT_GREEN);
     }
   }
-  
-
   
   delay(20);
 }
